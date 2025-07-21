@@ -1,4 +1,24 @@
 .App {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
   padding: 2rem;
+  background: #d50d0d;
+  border-radius: 8px;
+}
+
+input, select {
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: #222;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
