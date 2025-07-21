@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import MaintenanceForm from './MaintenanceForm';
 import { supabase } from './supabase';
 import './App.css';
 
@@ -164,6 +165,7 @@ function App() {
         </select>
         <button type="submit">Check Out</button>
       </form>
+      <MaintenanceForm />
     </div>
   );
 }
