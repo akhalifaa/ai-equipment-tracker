@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import MaintenanceForm from './MaintenanceForm';
 import { supabase } from './supabase';
+import { exportEquipmentLog } from './utils/exportToExcel';
 import './App.css';
 
 function App() {
@@ -10,7 +11,6 @@ function App() {
   const [availableEquipments, setAvailableEquipments] = useState([]);
   const [selectedId, setSelectedId] = useState('');
 
-  // Fetch all available (checked-in) equipment for the checkout dropdown
   useEffect(() => {
     fetchAvailableEquipments();
   }, []);
@@ -28,12 +28,11 @@ function App() {
     }
   };
 
-  // Check-in form handler
   const handleCheckIn = async (e) => {
     e.preventDefault();
-  
-    const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
-  
+
+    const today = new Date().toISOString().split('T')[0];
+
     const { data, error } = await supabase.from('equipment_log').insert([
       {
         equipment_name: equipmentName,
@@ -43,7 +42,7 @@ function App() {
         checked_in_at: today,
       },
     ]);
-  
+
     if (error) {
       console.error('❌ Failed to check in:', error.message);
     } else {
@@ -54,41 +53,37 @@ function App() {
       fetchAvailableEquipments();
     }
   };
-  
-  
 
-  // Check-out handler
   const handleCheckOut = async (e) => {
     e.preventDefault();
-  
+
     const parsedId = parseInt(selectedId);
     if (isNaN(parsedId)) return;
-  
+
     const { data: rows, error: fetchError } = await supabase
       .from('equipment_log')
       .select('*')
       .eq('id', parsedId)
       .limit(1);
-  
+
     if (fetchError || !rows || rows.length === 0) {
       console.error('❌ Failed to fetch row:', fetchError?.message);
       return;
     }
-  
+
     const item = rows[0];
     const checkInDate = new Date(item.checked_in_at);
     const checkOutDate = new Date();
-    const checkOutDateStr = checkOutDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-  
-    // ✅ Calculate number of full calendar days
+    const checkOutDateStr = checkOutDate.toISOString().split('T')[0];
+
     const msInDay = 1000 * 60 * 60 * 24;
     const daysUsed = Math.max(
       Math.ceil((checkOutDate - checkInDate) / msInDay),
       1
     );
-  
+
     const cost = Math.round(daysUsed * item.rate * 100) / 100;
-  
+
     const { data, error } = await supabase
       .from('equipment_log')
       .update({
@@ -98,7 +93,7 @@ function App() {
       })
       .eq('id', parsedId)
       .select();
-  
+
     if (error) {
       console.error('❌ Failed to check out:', error.message);
     } else {
@@ -108,12 +103,15 @@ function App() {
       fetchAvailableEquipments();
     }
   };
-  
-  
-  
-  
-  
-  
+
+  const handleExport = async () => {
+    const { data, error } = await supabase.from('equipment_log').select('*');
+    if (error) {
+      console.error("❌ Failed to fetch equipment log:", error.message);
+      return;
+    }
+    exportEquipmentLog(data);
+  };
 
   return (
     <div className="App">
@@ -134,7 +132,6 @@ function App() {
           placeholder="Renter WhatsApp Number"
           value={renterNumber}
           onChange={(e) => setRenterNumber(e.target.value)}
-          optional
         />
         <input
           type="number"
@@ -165,11 +162,20 @@ function App() {
         </select>
         <button type="submit">Check Out</button>
       </form>
+
+      <hr />
+
+      {/* Export Button */}
+      <h2>Export Full Equipment Log</h2>
+      <button onClick={handleExport}>
+        Export to Excel
+      </button>
+
+      <hr />
+
       <MaintenanceForm />
     </div>
   );
 }
 
 export default App;
-
-
