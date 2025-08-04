@@ -113,69 +113,86 @@ function App() {
     exportEquipmentLog(data);
   };
 
-  return (
-    <div className="App">
-      <h1>AI Equipment Tracker</h1>
+return (
+  <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-10">
+      <h1 className="text-4xl font-bold text-blue-700 text-center">AI Equipment Tracker</h1>
 
       {/* Check-In Form */}
-      <h2>Check In Equipment</h2>
-      <form onSubmit={handleCheckIn}>
-        <input
-          type="text"
-          placeholder="Equipment Name"
-          value={equipmentName}
-          onChange={(e) => setEquipmentName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Renter WhatsApp Number"
-          value={renterNumber}
-          onChange={(e) => setRenterNumber(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Rate (per day)"
-          value={rate}
-          onChange={(e) => setRate(e.target.value)}
-          required
-        />
-        <button type="submit">Check In</button>
-      </form>
-
-      <hr />
+      <div className="bg-white rounded-lg shadow p-6 max-w-md mx-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Check In Equipment</h2>
+        <form onSubmit={handleCheckIn} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Equipment Name"
+            value={equipmentName}
+            onChange={(e) => setEquipmentName(e.target.value)}
+            required
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          />
+          <input
+            type="text"
+            placeholder="Renter WhatsApp Number"
+            value={renterNumber}
+            onChange={(e) => setRenterNumber(e.target.value)}
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          />
+          <input
+            type="number"
+            placeholder="Rate (per day)"
+            value={rate}
+            onChange={(e) => setRate(e.target.value)}
+            required
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          />
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            Check In
+          </button>
+        </form>
+      </div>
 
       {/* Check-Out Form */}
-      <h2>Check Out Equipment</h2>
-      <form onSubmit={handleCheckOut}>
-        <select
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
-          required
-        >
-          <option value="">-- Select Equipment to Check Out --</option>
-          {availableEquipments.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.equipment_name} (Rate: ${item.rate})
-            </option>
-          ))}
-        </select>
-        <button type="submit">Check Out</button>
-      </form>
-
-      <hr />
+      <div className="bg-white rounded-lg shadow p-6 max-w-md mx-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Check Out Equipment</h2>
+        <form onSubmit={handleCheckOut} className="space-y-4">
+          <select
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+            required
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          >
+            <option value="">-- Select Equipment --</option>
+            {availableEquipments.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.equipment_name} (Rate: ${item.rate})
+              </option>
+            ))}
+          </select>
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            Check Out
+          </button>
+        </form>
+      </div>
 
       {/* Export Button */}
-      <h2>Export Full Equipment Log</h2>
-      <button onClick={handleExport}>
-        Export to Excel
-      </button>
+      <div className="bg-white rounded-lg shadow p-6 max-w-md mx-auto text-center">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Export Equipment Log</h2>
+        <button
+          onClick={handleExport}
+          className="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-700"
+        >
+          Export to Excel
+        </button>
+      </div>
 
-      <hr />
-
-      <MaintenanceForm />
+      {/* Maintenance Form */}
+      <div className="bg-white rounded-lg shadow p-6 max-w-md mx-auto">
+        <MaintenanceForm />
+      </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
